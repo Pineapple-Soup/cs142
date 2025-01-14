@@ -18,13 +18,6 @@ extern "C" void fastsqrt(const float* in,  float* out, unsigned count) {
         // Newton's method
         y = _mm512_sub_ps(y, _mm512_div_ps(_mm512_sub_ps(_mm512_mul_ps(y, y), n), _mm512_mul_ps(y, _mm512_set1_ps(2.0f))));
         y = _mm512_sub_ps(y, _mm512_div_ps(_mm512_sub_ps(_mm512_mul_ps(y, y), n), _mm512_mul_ps(y, _mm512_set1_ps(2.0f))));
- 
-        // Halley's Method
-        // __m512 y2 = _mm512_mul_ps(y, y);
-        // __m512 y2_n = _mm512_sub_ps(y2, n);
-        // __m512 numerator = _mm512_mul_ps(_mm512_mul_ps(y2_n, y), _mm512_set1_ps(4.0f));
-        // __m512 denominator = _mm512_sub_ps(_mm512_mul_ps(y2, _mm512_set1_ps(8.0f)), _mm512_mul_ps(y2_n, _mm512_set1_ps(2.0f)));
-        // y = _mm512_sub_ps(y, _mm512_div_ps(numerator, denominator));
 
         _mm512_storeu_ps(&out[j], y);
     }
