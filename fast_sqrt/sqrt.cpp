@@ -2,6 +2,8 @@
 
 extern "C" void fastsqrt(const float* in,  float* out, unsigned count) {
     for (unsigned j = 0; j + 15 < count; j += 16) {
+        _mm_prefetch((const char*)&in[j + 16], _MM_HINT_T0);
+
         __m512 n = _mm512_loadu_ps(&in[j]);
 
         // Initial guess
