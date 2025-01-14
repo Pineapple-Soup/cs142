@@ -5,6 +5,7 @@ extern "C" void fastsqrt(const float* in,  float* out, unsigned count) {
         _mm_prefetch((const char*)&in[j + 16], _MM_HINT_T0);
 
         __m512 n = _mm512_loadu_ps(&in[j]);
+        __m512 two = _mm512_set1_ps(2.0f);
 
         // Initial guess
         __m512i i = _mm512_castps_si512(n);
@@ -13,11 +14,11 @@ extern "C" void fastsqrt(const float* in,  float* out, unsigned count) {
         __m512 y = _mm512_castsi512_ps(i);
 
         // Heron's method
-        y = _mm512_div_ps(_mm512_add_ps(y, _mm512_div_ps(n, y)), _mm512_set1_ps(2.0f));
+        y = _mm512_div_ps(_mm512_add_ps(y, _mm512_div_ps(n, y)), two);
 
-        // Newton's method
-        y = _mm512_sub_ps(y, _mm512_div_ps(_mm512_sub_ps(_mm512_mul_ps(y, y), n), _mm512_mul_ps(y, _mm512_set1_ps(2.0f))));
-        y = _mm512_sub_ps(y, _mm512_div_ps(_mm512_sub_ps(_mm512_mul_ps(y, y), n), _mm512_mul_ps(y, _mm512_set1_ps(2.0f))));
+        // Newton's method;
+        y = _mm512_sub_ps(y, _mm512_div_ps(_mm512_sub_ps(_mm512_mul_ps(y, y), n), _mm512_mul_ps(y, two)));
+        y = _mm512_sub_ps(y, _mm512_div_ps(_mm512_sub_ps(_mm512_mul_ps(y, y), n), _mm512_mul_ps(y, two)));
 
         _mm512_storeu_ps(&out[j], y);
     }
